@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '../firebase';
-import { Lock, Mail } from 'lucide-react';
 
 // Google Icon Component
 const GoogleIcon = () => (
@@ -26,25 +25,8 @@ const GoogleIcon = () => (
 );
 
 const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-
-    const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        setError('');
-
-        try {
-            await signInWithEmailAndPassword(auth, email, password);
-        } catch (err: any) {
-            console.error(err);
-            setError('Failed to login. Please check your credentials.');
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const handleGoogleLogin = async () => {
         setLoading(true);
@@ -69,69 +51,20 @@ const Login = () => {
                 <p className="text-text-muted text-center mb-8">Sign in to manage your tools</p>
 
                 {error && (
-                    <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-lg mb-4 text-sm text-center">
+                    <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-lg mb-6 text-sm text-center">
                         {error}
                     </div>
                 )}
 
-                <form onSubmit={handleLogin} className="space-y-6">
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-text-muted ml-1">Email</label>
-                        <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="w-full bg-background border border-border rounded-xl py-3 pl-10 pr-4 text-text focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-gray-700"
-                                placeholder="name@example.com"
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-text-muted ml-1">Password</label>
-                        <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="w-full bg-background border border-border rounded-xl py-3 pl-10 pr-4 text-text focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-gray-700"
-                                placeholder="••••••••"
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full bg-primary hover:bg-primary-hover text-white font-semibold py-3 rounded-xl transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed"
-                    >
-                        {loading ? 'Signing In...' : 'Sign In with Email'}
-                    </button>
-
-                    <div className="relative my-4">
-                        <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-border"></div>
-                        </div>
-                        <div className="relative flex justify-center text-sm">
-                            <span className="px-2 bg-surface text-text-muted">Or continue with</span>
-                        </div>
-                    </div>
-
-                    <button
-                        type="button"
-                        onClick={handleGoogleLogin}
-                        disabled={loading}
-                        className="w-full bg-white hover:bg-gray-50 text-gray-900 font-semibold py-3 rounded-xl transition-all transform active:scale-[0.98] shadow-lg flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
-                    >
-                        <GoogleIcon />
-                        Sign in with Google
-                    </button>
-                </form>
+                <button
+                    type="button"
+                    onClick={handleGoogleLogin}
+                    disabled={loading}
+                    className="w-full bg-white hover:bg-gray-50 text-gray-900 font-semibold py-3 rounded-xl transition-all transform active:scale-[0.98] shadow-lg flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                    <GoogleIcon />
+                    Sign in with Google
+                </button>
             </div>
         </div>
     );
