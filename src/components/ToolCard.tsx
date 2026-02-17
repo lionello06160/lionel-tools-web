@@ -1,5 +1,5 @@
 import React from 'react';
-import { GitPullRequest, Trash2, Edit2 } from 'lucide-react';
+import { GitPullRequest, Trash2, Edit2, ExternalLink } from 'lucide-react';
 import type { Tool } from '../lib/types';
 import { getTagStyles, cn } from '../lib/utils';
 
@@ -17,18 +17,40 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool, onEdit, onDelete }) => {
                     <h3 className="text-sm font-semibold text-text group-hover:text-primary transition-colors truncate">
                         {tool.name}
                     </h3>
-                    <a
-                        href={tool.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-text-muted hover:text-white transition-colors text-xs truncate mt-0.5 block hover:underline"
-                    >
-                        {new URL(tool.url).hostname.replace('www.', '')}
-                    </a>
+                    <div className="flex flex-col gap-1 mt-1">
+                        {tool.urls && tool.urls.length > 0 ? (
+                            tool.urls.map((link, idx) => (
+                                <a
+                                    key={idx}
+                                    href={link.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-text-muted hover:text-white transition-all text-[11px] truncate flex items-center gap-1 hover:underline group/link w-fit"
+                                >
+                                    <ExternalLink size={10} className="opacity-0 group-hover/link:opacity-100 transition-opacity" />
+                                    <span className="font-medium text-primary/70 group-hover/link:text-primary transition-colors">
+                                        {link.label || 'Link'}:
+                                    </span>
+                                    <span className="truncate max-w-[120px]">
+                                        {new URL(link.url).hostname.replace('www.', '')}
+                                    </span>
+                                </a>
+                            ))
+                        ) : (
+                            <a
+                                href={tool.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-text-muted hover:text-white transition-colors text-xs truncate hover:underline"
+                            >
+                                {new URL(tool.url).hostname.replace('www.', '')}
+                            </a>
+                        )}
+                    </div>
                 </div>
 
                 {/* Actions - visible on hover or persistent but subtle */}
-                <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0">
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
@@ -54,7 +76,7 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool, onEdit, onDelete }) => {
                 </div>
             </div>
 
-            <div className="mt-2 flex items-center justify-between">
+            <div className="mt-auto pt-3 flex items-center justify-between">
                 <div className="flex flex-wrap gap-1">
                     {tool.tags.slice(0, 3).map((tag, index) => {
                         const styles = getTagStyles(tag);
@@ -88,15 +110,6 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool, onEdit, onDelete }) => {
                 )}
             </div>
 
-            <a
-                href={tool.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="absolute inset-0 z-0"
-                aria-label="Open tool"
-            >
-                {/* Full card clickable overlay, but allowing buttons to work due to z-index */}
-            </a>
             <style>{`
                 .group button, .group a { position: relative; z-index: 10; }
             `}</style>
@@ -105,3 +118,4 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool, onEdit, onDelete }) => {
 };
 
 export default ToolCard;
+
